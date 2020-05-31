@@ -3,24 +3,26 @@
 set -e
 set -x
 
-if [ -z [[ ${INPUT_LAMBDA_REGION} || -z ${INPUT_LAMBDA_REGION} ]] ]
-then
-  echo "var is unset"
-else
-  echo "var is set to '$var'"
-fi
+validate_inputs(){
+  #ToDO: find a better way of user input validation
+  true
+}
 
+validate_inputs(){
+  #ToDO: improved dependency packaging
+  true
+}
 
 echo "Create dependency package"
 mkdir -p dependencies
-python3 -m pip install --target=dependencies -r "requirements.txt"
+python3 -m pip install --target=dependencies -r "${INPUT_DEPENDENCY_LIST}"
 zip -r dependencies.zip requirements.txt # changed for debugging
 
-    - ${{ inputs.AWS_REGION }}
-    - ${{ inputs.ACCOUNT_NUMBER }}
-    - ${{ inputs.AWS_ACCESS_KEY_ID }}
-    - ${{ inputs.AWS_SECRET_ACCESS_KEY }}
-    - ${{ inputs.LAMBDA_LAYER_NAME }}
-    - ${{ inputs.DEPENDENCY_LIST }}
-    - ${{ inputs.LAMBDA_FUNCTION_NAME }}
-    - ${{ inputs.LAMBDA_HANDLER_NAME }}
+echo "Build layer ARN"
+LAYER_ARN="arn:aws:lambda:${INPUT_AWS_REGION}:${INPUT_ACCOUNT_NUMBER}:layer:${INPUT_LAYER_NAME}"
+
+echo "Setup AWS profile and push dependencies to layer"
+aws configure set aws_access_key_id "${INPUT_AWS_ACCESS_KEY_ID}"
+aws configure set aws_secret_access_key "${INPUT_AWS_SECRET_ACCESS_KEY}"
+aws configure set default.region "${INPUT_AWS_REGION}"
+aws lambda publish-layer-version --layer-name "${LAYER_ARN}" --zip-file fileb://dependencies.zip
