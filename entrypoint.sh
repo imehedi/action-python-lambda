@@ -16,7 +16,7 @@ validate_inputs(){
 echo "Create dependency package"
 mkdir -p dependencies
 python3 -m pip install --target=dependencies -r "${INPUT_DEPENDENCY_LIST}"
-zip -r dependencies.zip requirements.txt # changed for debugging
+zip -r dependencies.zip dependencies
 
 echo "Setup AWS profile and push dependencies to layer"
 aws configure set aws_access_key_id "${INPUT_AWS_ACCESS_KEY_ID}"
