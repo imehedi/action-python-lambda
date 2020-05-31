@@ -18,11 +18,8 @@ mkdir -p dependencies
 python3 -m pip install --target=dependencies -r "${INPUT_DEPENDENCY_LIST}"
 zip -r dependencies.zip requirements.txt # changed for debugging
 
-echo "Build layer ARN"
-LAYER_ARN="arn:aws:lambda:${INPUT_AWS_REGION}:${INPUT_ACCOUNT_NUMBER}:layer:${INPUT_LAYER_NAME}"
-
 echo "Setup AWS profile and push dependencies to layer"
 aws configure set aws_access_key_id "${INPUT_AWS_ACCESS_KEY_ID}"
 aws configure set aws_secret_access_key "${INPUT_AWS_SECRET_ACCESS_KEY}"
 aws configure set default.region "${INPUT_AWS_REGION}"
-aws lambda publish-layer-version --layer-name "${LAYER_ARN}" --zip-file fileb://dependencies.zip
+aws lambda publish-layer-version --layer-name "${INPUT_LAYER_NAME}" --zip-file fileb://dependencies.zip
