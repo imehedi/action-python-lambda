@@ -12,11 +12,10 @@ jobs:
     steps:
       - name: Checkout the latest version
         uses: actions/checkout@v2
-        args: .head_commit.message .*#build.*
 
       - name: lint yaml
         uses: ibiqlik/action-yamllint@master
-          args: .head_commit.message .*#build.*
+        with:
 
   createRelease:
     needs: performLinting
