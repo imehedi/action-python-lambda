@@ -1,0 +1,57 @@
+---
+name: "action-python-lambda-pkg"
+description: "A GitHub action to create lambda package and deployment"
+author: imehedi
+
+inputs:
+  REGION:
+    description: Specify AWS region you would like to use for this lambda.
+    required: true
+    default: "eu-west-1"
+
+  AWS_ACCOUNT_NUMBER:
+    description: We will use the account number to generate ARN.
+    required: true
+
+  AWS_ACCESS_KEY_ID:
+    description: AWS secret key ID. Please use from GitHUb secrets store.
+    required: true
+
+  AWS_SECRET_ACCESS_KEY:
+    description: AWS secret key. Please use from GitHUb secrets store.
+    required: true
+
+  LAMBDA_LAYER_NAME:
+    description: Please provide target lambda layer name.
+    required: false
+
+  DEPENDENCY_LIST:
+    description: Name of file containing dependencies.
+    required: false
+    default: "requirements.txt"
+
+  LAMBDA_FUNCTION_NAME:
+    description: Desired name of your lambda function.
+    required: true
+
+  LAMBDA_HANDLER_NAME:
+    description: For python functions only, specify your handler name.
+    required: true
+    default: "lambda_handler"
+
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - ${{ inputs.AWS_REGION }}
+    - ${{ inputs.ACCOUNT_NUMBER }}
+    - ${{ inputs.AWS_ACCESS_KEY_ID }}
+    - ${{ inputs.AWS_SECRET_ACCESS_KEY }}
+    - ${{ inputs.LAMBDA_LAYER_NAME }}
+    - ${{ inputs.DEPENDENCY_LIST }}
+    - ${{ inputs.LAMBDA_FUNCTION_NAME }}
+    - ${{ inputs.LAMBDA_HANDLER_NAME }}
+    -
+branding:
+  icon: 'briefcase'
+  color: 'purple'
